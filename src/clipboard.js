@@ -11,9 +11,10 @@ class Clipboard extends Emitter {
      * @param {String|HTMLElement|HTMLCollection|NodeList} trigger
      * @param {Object} options
      */
+    //TODO trigger是个选择器
     constructor(trigger, options) {
         super();
-
+        //TODO 参数
         this.resolveOptions(options);
         this.listenClick(trigger);
     }
@@ -23,6 +24,7 @@ class Clipboard extends Emitter {
      * or custom functions that were passed in the constructor.
      * @param {Object} options
      */
+    //TODO 参数
     resolveOptions(options = {}) {
         this.action    = (typeof options.action    === 'function') ? options.action    : this.defaultAction;
         this.target    = (typeof options.target    === 'function') ? options.target    : this.defaultTarget;
@@ -34,6 +36,7 @@ class Clipboard extends Emitter {
      * Adds a click event listener to the passed trigger.
      * @param {String|HTMLElement|HTMLCollection|NodeList} trigger
      */
+    //TODO 监听
     listenClick(trigger) {
         this.listener = listen(trigger, 'click', (e) => this.onClick(e));
     }
@@ -42,13 +45,14 @@ class Clipboard extends Emitter {
      * Defines a new `ClipboardAction` on each click event.
      * @param {Event} e
      */
+    //TODO 事件
     onClick(e) {
         const trigger = e.delegateTarget || e.currentTarget;
 
         if (this.clipboardAction) {
             this.clipboardAction = null;
         }
-
+        //TODO 复制
         this.clipboardAction = new ClipboardAction({
             action    : this.action(trigger),
             target    : this.target(trigger),
@@ -84,6 +88,7 @@ class Clipboard extends Emitter {
      * given.
      * @param {String} [action]
      */
+    //TODO 无法被继承
     static isSupported(action = ['copy', 'cut']) {
         const actions = (typeof action === 'string') ? [action] : action;
         let support = !!document.queryCommandSupported;

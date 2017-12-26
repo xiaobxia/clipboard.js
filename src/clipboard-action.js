@@ -9,7 +9,9 @@ class ClipboardAction {
      * @param {Object} options
      */
     constructor(options) {
+        //TODO 扩展配置
         this.resolveOptions(options);
+        //TODO 初始化
         this.initSelection();
     }
 
@@ -32,11 +34,14 @@ class ClipboardAction {
      * Decides which selection strategy is going to be applied based
      * on the existence of `text` and `target` properties.
      */
+    //TODO 说明是什么类型的剪切
     initSelection() {
         if (this.text) {
+            //TODO 有text参数
             this.selectFake();
         }
         else if (this.target) {
+            //TODO 没有text参数
             this.selectTarget();
         }
     }
@@ -52,7 +57,7 @@ class ClipboardAction {
 
         this.fakeHandlerCallback = () => this.removeFake();
         this.fakeHandler = this.container.addEventListener('click', this.fakeHandlerCallback) || true;
-
+        //TODO 创建假元素，因为document.execCommand需要在input，textarea元素上实现
         this.fakeElem = document.createElement('textarea');
         // Prevent zooming on iOS
         this.fakeElem.style.fontSize = '12pt';
@@ -71,8 +76,9 @@ class ClipboardAction {
         this.fakeElem.value = this.text;
 
         this.container.appendChild(this.fakeElem);
-
+        //TODO 获得焦点
         this.selectedText = select(this.fakeElem);
+        //TODO 执行
         this.copyText();
     }
 
@@ -80,6 +86,7 @@ class ClipboardAction {
      * Only removes the fake element after another click event, that way
      * a user can hit `Ctrl+C` to copy because selection still exists.
      */
+    //TODO 移除假元素和假元素上的事件
     removeFake() {
         if (this.fakeHandler) {
             this.container.removeEventListener('click', this.fakeHandlerCallback);
@@ -96,6 +103,7 @@ class ClipboardAction {
     /**
      * Selects the content from element passed on `target` property.
      */
+    //TODO 没有参数就不要假元素
     selectTarget() {
         this.selectedText = select(this.target);
         this.copyText();
@@ -104,6 +112,7 @@ class ClipboardAction {
     /**
      * Executes the copy operation based on the current selection.
      */
+    //TODO 执行命令，是实现的核心
     copyText() {
         let succeeded;
 
@@ -113,7 +122,7 @@ class ClipboardAction {
         catch (err) {
             succeeded = false;
         }
-
+        //TODO 执行后的操作
         this.handleResult(succeeded);
     }
 
@@ -121,6 +130,7 @@ class ClipboardAction {
      * Fires an event based on the copy operation result.
      * @param {Boolean} succeeded
      */
+    //TODO 广播事件
     handleResult(succeeded) {
         this.emitter.emit(succeeded ? 'success' : 'error', {
             action: this.action,
@@ -133,6 +143,7 @@ class ClipboardAction {
     /**
      * Moves focus away from `target` and back to the trigger, removes current selection.
      */
+    //TODO trigger是个选择器".text"
     clearSelection() {
         if (this.trigger) {
             this.trigger.focus();
@@ -145,6 +156,7 @@ class ClipboardAction {
      * Sets the `action` to be performed which can be either 'copy' or 'cut'.
      * @param {String} action
      */
+    //TODO 命令只能是copy或者是cut，在初始化就执行
     set action(action = 'copy') {
         this._action = action;
 
@@ -166,9 +178,11 @@ class ClipboardAction {
      * that will be have its content copied.
      * @param {Element} target
      */
+    //TODO 在初始化就执行，得到元素
     set target(target) {
         if (target !== undefined) {
             if (target && typeof target === 'object' && target.nodeType === 1) {
+                //TODO 看元素是否让执行这些操作
                 if (this.action === 'copy' && target.hasAttribute('disabled')) {
                     throw new Error('Invalid "target" attribute. Please use "readonly" instead of "disabled" attribute');
                 }
